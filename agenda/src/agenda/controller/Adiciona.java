@@ -5,6 +5,7 @@ package agenda.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -41,7 +42,8 @@ public class Adiciona extends HttpServlet {
     	ArrayList<String> listaURL=new ArrayList<>();
     	ArrayList<Endereco> listaEndereco=new ArrayList<>();
     	ArrayList<String> listaRedeSocial=new ArrayList<>();
-    	DateFormat f = DateFormat.getDateInstance();
+
+    	SimpleDateFormat formato = new SimpleDateFormat("MM/dd/yyyy");
     	
     	Date dataAniversario = null;
     	String nome = request.getParameter("nome");
@@ -52,7 +54,7 @@ public class Adiciona extends HttpServlet {
     	String empresaFonetico = request.getParameter("empresafonetico");
     	
     	try {
-    		dataAniversario = f.parse(request.getParameter("datanascimento"));
+    		dataAniversario = formato.parse(request.getParameter("datanascimento"));
     	}catch(Exception e2) {
     		throw new RuntimeException(e2);
     	}
