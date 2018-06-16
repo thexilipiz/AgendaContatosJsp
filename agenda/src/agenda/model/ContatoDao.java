@@ -16,7 +16,7 @@ import agenda.Endereco;
 public class ContatoDao {
 	Connection con;
 	public String texto;
-	
+
 	public ContatoDao() {
 
 	}
@@ -115,7 +115,7 @@ public class ContatoDao {
 			insertNome.setString(2, contato.getNomeFonetico());
 			insertNome.setString(3, contato.getSobrenome());
 			insertNome.setString(4, contato.getSobrenomeFonetico());
-			insertNome.setDate(5, new java.sql.Date(contato.getDataAniversario().getTime()));
+			insertNome.setString(5, contato.getDataAniversario());
 			insertNome.setString(6, contato.getEmpresa());
 			insertNome.setString(7, contato.getEmpresaFonetico());
 			insertNome.executeUpdate();
@@ -212,7 +212,7 @@ public class ContatoDao {
 				contat = new Contato();
 
 				int id = rs.getInt("id");
-				System.out.println("id: " +	id );
+				System.out.println("id: " + id);
 				contat.setNome(rs.getString("Nome"));
 				contat.setId(id);
 				contat.setNomeFonetico(rs.getString("Nome Fonetico"));
@@ -220,7 +220,7 @@ public class ContatoDao {
 				contat.setSobrenomeFonetico(rs.getString("Sobrenome Fonetico"));
 				contat.setEmpresa(rs.getString("Empresa"));
 				contat.setEmpresaFonetico(rs.getString("Empresa Fonetico"));
-				contat.setDataAniversario(rs.getDate("Data Nascimento"));
+				contat.setDataAniversario(rs.getString("Data Nascimento"));
 
 				carregarListas(listas, pegarContato, contat.getListaTelefone(), id, "Telefone");
 				carregarListas(listas, pegarEmail, contat.getListaEmail(), id, "E-mail");
@@ -287,55 +287,60 @@ public class ContatoDao {
 
 	public List<Contato> consultaPorQualquerTexto(String texto) throws SQLException {
 		int id = 0;
-		Contato contat;
-		Endereco endereco;
-		
+		Contato contat = null;
+		Endereco endereco = null;
+
 		List<Contato> lista = new ArrayList<>();
-		ArrayList<Endereco> listaEndereco = new ArrayList<>();
-		ArrayList<String> listaTelefone  = new ArrayList<>();
-		ArrayList<String> listaEmail = new ArrayList<>();
-		ArrayList<String> listaURL = new ArrayList<>();
-		ArrayList<String> listaRedeSocial = new ArrayList<>();
-		
+		ArrayList<Endereco> listaEndereco;
+		ArrayList<String> listaTelefone;
+		ArrayList<String> listaEmail;
+		ArrayList<String> listaURL;
+		ArrayList<String> listaRedeSocial;
+
 		con = new ConnectionFactory().getConnection();
 
-		String sql = "\r\n" + 
-				"SELECT id FROM nome WHERE nome LIKE '%"+texto+"%'or id LIKE '%"+texto+"%'or Sobrenome LIKE'%"+texto+"%' or Empresa LIKE '%"+texto+"%' or `Empresa Fonetico` LIKE '%"+texto+"%' or `Data Nascimento` LIKE '%"+texto+"%' \r\n" + 
-				"UNION \r\n" + 
-				"SELECT id FROM contato WHERE idContato LIKE '%"+texto+"%' or Telefone LIKE'%"+texto+"%' or id LIKE '%"+texto+"%'\r\n" + 
-				"UNION \r\n" + 
-				"SELECT id FROM email WHERE idEmail LIKE '%"+texto+"%' or `E-mail` LIKE'%"+texto+"%' or id LIKE '%"+texto+"%'\r\n" + 
-				"UNION \r\n" + 
-				"SELECT id FROM endereco WHERE idEndereco LIKE '%"+texto+"%' or Rua LIKE '%"+texto+"%' or Bairro LIKE '%"+texto+"%' or Estado LIKE '%"+texto+"%' or Cidade LIKE '%"+texto+"%' or CEP LIKE '%"+texto+"%' or Pais LIKE '%"+texto+"%' or Complemento LIKE '%"+texto+"%' or id LIKE '%"+texto+"%'\r\n" + 
-				"UNION \r\n" + 
-				"SELECT id FROM `rede social` WHERE idRedeSocial LIKE '%"+texto+"%' or `Rede Social` LIKE '%"+texto+"%' or id LIKE '%"+texto+"%'\r\n" + 
-				"UNION \r\n" + 
-				"SELECT id FROM url WHERE idUrl LIKE '%"+texto+"%' or Url LIKE '%"+texto+"%' or id LIKE '%"+texto+"%';";
-				
+		String sql = "\r\n" + "SELECT id FROM nome WHERE nome LIKE '%" + texto + "%'or id LIKE '%" + texto
+				+ "%'or Sobrenome LIKE'%" + texto + "%' or Empresa LIKE '%" + texto + "%' or `Empresa Fonetico` LIKE '%"
+				+ texto + "%' or `Data Nascimento` LIKE '%" + texto + "%' \r\n" + "UNION \r\n"
+				+ "SELECT id FROM contato WHERE idContato LIKE '%" + texto + "%' or Telefone LIKE'%" + texto
+				+ "%' or id LIKE '%" + texto + "%'\r\n" + "UNION \r\n" + "SELECT id FROM email WHERE idEmail LIKE '%"
+				+ texto + "%' or `E-mail` LIKE'%" + texto + "%' or id LIKE '%" + texto + "%'\r\n" + "UNION \r\n"
+				+ "SELECT id FROM endereco WHERE idEndereco LIKE '%" + texto + "%' or Rua LIKE '%" + texto
+				+ "%' or Bairro LIKE '%" + texto + "%' or Estado LIKE '%" + texto + "%' or Cidade LIKE '%" + texto
+				+ "%' or CEP LIKE '%" + texto + "%' or Pais LIKE '%" + texto + "%' or Complemento LIKE '%" + texto
+				+ "%' or id LIKE '%" + texto + "%'\r\n" + "UNION \r\n"
+				+ "SELECT id FROM `rede social` WHERE idRedeSocial LIKE '%" + texto + "%' or `Rede Social` LIKE '%"
+				+ texto + "%' or id LIKE '%" + texto + "%'\r\n" + "UNION \r\n"
+				+ "SELECT id FROM url WHERE idUrl LIKE '%" + texto + "%' or Url LIKE '%" + texto + "%' or id LIKE '%"
+				+ texto + "%';";
+
 		PreparedStatement st = con.prepareStatement(sql);
-		
+
 		try {
 			ResultSet resultadoSql = st.executeQuery();
-			 
-			while(resultadoSql.next()){
+
+			while (resultadoSql.next()) {
 				id = resultadoSql.getInt("id");
-			
-				contat = new Contato();
-				endereco = new Endereco();
-	
-				String sqlJoin = "SELECT * FROM nome n\r\n" + 
-						"INNER JOIN endereco e ON  n.id = e.id\r\n" + 
-						"INNER JOIN contato c ON n.id = c.id \r\n" + 
-						"INNER JOIN email em ON n.id = em.id\r\n" + 
-						"INNER JOIN url u ON n.id = u.id \r\n" + 
-						"INNER JOIN `rede social` r ON  n.id = r.id\r\n" +
-						"WHERE n.id = " + id + ";" ;
-				
+
+				String sqlJoin = "SELECT * FROM nome n\r\n" + "INNER JOIN endereco e ON  n.id = e.id\r\n"
+						+ "INNER JOIN contato c ON n.id = c.id \r\n" + "INNER JOIN email em ON n.id = em.id\r\n"
+						+ "INNER JOIN url u ON n.id = u.id \r\n" + "INNER JOIN `rede social` r ON  n.id = r.id\r\n"
+						+ "WHERE n.id = " + id + ";";
+
 				st = con.prepareStatement(sqlJoin);
-							
+				System.out.println(sqlJoin);
 				ResultSet resultadoJoin = st.executeQuery();
-				
+
 				while (resultadoJoin.next()) {
+					contat = new Contato();
+					endereco = new Endereco();
+
+					listaEndereco = new ArrayList<>();
+					listaTelefone = new ArrayList<>();
+					listaURL = new ArrayList<>();
+					listaEmail = new ArrayList<>();
+					listaRedeSocial = new ArrayList<>();
+
 					contat.setNome(resultadoJoin.getString("Nome"));
 					contat.setId(id);
 					contat.setNomeFonetico(resultadoJoin.getString("Nome Fonetico"));
@@ -343,8 +348,8 @@ public class ContatoDao {
 					contat.setSobrenomeFonetico(resultadoJoin.getString("Sobrenome Fonetico"));
 					contat.setEmpresa(resultadoJoin.getString("Empresa"));
 					contat.setEmpresaFonetico(resultadoJoin.getString("Empresa Fonetico"));
-					contat.setDataAniversario(resultadoJoin.getDate("Data Nascimento"));
-					
+					contat.setDataAniversario(resultadoJoin.getString("Data Nascimento"));
+
 					endereco.setBairro(resultadoJoin.getString("Bairro"));
 					endereco.setCEP(resultadoJoin.getInt("CEP"));
 					endereco.setCidade(resultadoJoin.getString("Cidade"));
@@ -352,21 +357,24 @@ public class ContatoDao {
 					endereco.setEstado(resultadoJoin.getString("Estado"));
 					endereco.setComplemento(resultadoJoin.getString("Complemento"));
 					endereco.setRua(resultadoJoin.getString("Rua"));
-					
-					
+
 					listaEndereco.add(endereco);
+
 					listaTelefone.add(resultadoJoin.getString("Telefone"));
+
 					listaURL.add(resultadoJoin.getString("Url"));
+
 					listaEmail.add(resultadoJoin.getString("E-mail"));
+
 					listaRedeSocial.add(resultadoJoin.getString("Rede Social"));
-					
+
+					contat.setListaEndereco(listaEndereco);
+					contat.setListaTelefone(listaTelefone);
+					contat.setListaURL(listaURL);
+					contat.setListaEmail(listaEmail);
+					contat.setListaRedeSocial(listaRedeSocial);
+					lista.add(contat);
 				}
-				contat.setListaEndereco(listaEndereco);
-				contat.setListaTelefone(listaTelefone);
-				contat.setListaURL(listaURL);
-				contat.setListaEmail(listaEmail);
-				contat.setListaRedeSocial(listaRedeSocial);
-				lista.add(contat);
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

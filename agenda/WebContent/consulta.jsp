@@ -59,7 +59,7 @@
 									<%=contato.getSobrenomeFonetico()%><br> Empresa:
 									<%=contato.getEmpresa()%><br> Empresa Fonetico:
 									<%=contato.getEmpresaFonetico()%><br> Data de Nascimento:
-									<%=df.format(contato.getDataAniversario())%><br>
+									<%=contato.getDataAniversario()%><br>
 									<%
 										for (String url : contato.getListaURL()) {
 									%>

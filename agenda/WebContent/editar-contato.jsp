@@ -115,7 +115,7 @@
 					  </div>
 					  <div class="form-group">
 					    <label for="datanascimento">Data de Nascimento:</label>
-					    <input type="text" class="form-control" id="datanascimento" name="datanascimento" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" value="<%=df.format(contatoAlterar.getDataAniversario().getTime())%>">
+					    <input type="text" class="form-control" id="datanascimento" name="datanascimento" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" value="<%=contatoAlterar.getDataAniversario()%>">
 					  </div>
 					  <div class="form-group" id="gruporedesocial">
 					    <label for="redesocial">Redes Sociais:</label>
@@ -128,7 +128,7 @@
 					  </div>
 					  <input type="hidden" name="id" value="<%= request.getParameter("id") %>">
 					  <br>
-					  <button type="submit" onclick="return validarformulario();" class="btn btn-dark">Salvar</button>
+					  <button type="submit" class="btn btn-dark">Salvar</button>
 				</form> 
 			</div>
 		</div>

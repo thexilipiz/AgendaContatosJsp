@@ -4,10 +4,7 @@ package agenda.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,21 +40,14 @@ public class Adiciona extends HttpServlet {
     	ArrayList<Endereco> listaEndereco=new ArrayList<>();
     	ArrayList<String> listaRedeSocial=new ArrayList<>();
 
-    	SimpleDateFormat formato = new SimpleDateFormat("MM/dd/yyyy");
-    	
-    	Date dataAniversario = null;
     	String nome = request.getParameter("nome");
     	String nomeFonetico = request.getParameter("nomefonetico");
     	String sobrenome = request.getParameter("sobrenome");
     	String sobrenomeFonetico = request.getParameter("sobrenomefonetico");
     	String empresa = request.getParameter("empresa");
     	String empresaFonetico = request.getParameter("empresafonetico");
-    	
-    	try {
-    		dataAniversario = formato.parse(request.getParameter("datanascimento"));
-    	}catch(Exception e2) {
-    		throw new RuntimeException(e2);
-    	}
+    	String dataAniversario = request.getParameter("datanascimento");
+    
     	
     	this.criarLista(listaTelefone, "telefones",request);
     	this.criarLista(listaEmail, "email",request);

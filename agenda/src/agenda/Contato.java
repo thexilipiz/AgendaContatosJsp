@@ -1,7 +1,6 @@
 package agenda;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Contato {
 	private int id;
@@ -15,7 +14,7 @@ public class Contato {
 	private ArrayList<String> listaEmail = new ArrayList<>();
 	private ArrayList<String> listaURL = new ArrayList<>();
 	private ArrayList<Endereco> listaEndereco = new ArrayList<>();
-	private Date dataAniversario;
+	private String dataAniversario;
 	private ArrayList<String> listaRedeSocial = new ArrayList<>();
 
 	public int getId() {
@@ -106,11 +105,11 @@ public class Contato {
 		this.listaEndereco = listaEndereco;
 	}
 
-	public Date getDataAniversario() {
+	public String getDataAniversario() {
 		return dataAniversario;
 	}
 
-	public void setDataAniversario(Date dataAniversario) {
+	public void setDataAniversario(String dataAniversario) {
 		this.dataAniversario = dataAniversario;
 	}
 
